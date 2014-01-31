@@ -50,7 +50,7 @@
 
             if( series.points.image.images[ i ] ){
                 img.src = series.points.image.path + series.points.image.images[ i ]
-            } else {
+            } else if( series.points.image.images[ i ] !== false ){
                 img.src = series.points.image.path + series.points.image.base;
             }
 
