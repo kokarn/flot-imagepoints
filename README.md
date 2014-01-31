@@ -1,4 +1,4 @@
-Flot ImagePoints
+Flot ImageSymbol
 ================
 
 Flotcharts (http://www.flotcharts.org/) plugin to enable custom images for each point.
