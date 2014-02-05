@@ -28,6 +28,11 @@
                 drawPositionX,
                 drawPositionY;
 
+            // Don't draw any symbols if the image is set to false
+            if( image === false ){
+                return false;
+            }
+
             // Only draw the image if it's not the shadow (because we cant really add a shadow to an image)
             if( shadow ){
                 return false;
