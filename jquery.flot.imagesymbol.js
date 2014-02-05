@@ -50,12 +50,11 @@
             return true;
         }
 
-        var s = series.points.image,
-            baseRadius = false,
-            image;
+        var s = series.points.image;
 
         if( s ) {
             series.points.symbol = function( ctx, x, y, radius, shadow ){
+                var image;
                 
                 if( series.points.image.images[ i ] ){
                     image = series.points.image.path + series.points.image.images[ i ]
@@ -64,11 +63,11 @@
                 } else {
                     image = false;
                 }
+                
+                drawImageSymbol( ctx, x, y, radius, shadow, image );
 
                 // Increase the counter so we keep up with the dataseries
                 i++;
-                
-                drawImageSymbol( ctx, x, y, radius, shadow, image );
             };
         }
     }
