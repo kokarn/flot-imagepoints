@@ -19,8 +19,10 @@
  */
 
 (function( $ ) {
+    var i = 0;
+
     function processRawData( plot, series, datapoints ) {
-        function drawImageSymbol( ctx, x, y, radius, shadow ){
+        function drawImageSymbol( ctx, x, y, radius, shadow, image ){
             var img = new Image(),
                 plotOffset = plot.getPlotOffset(),
                 drawPositionX,
@@ -31,16 +33,6 @@
                 return false;
             }
 
-            if( baseRadius === false ){
-                baseRadius = radius;
-            }
-
-            // Check if we're trying to draw something that's bigger than we've already drawn (eg, a highlight)
-
-            if( baseRadius !== false && baseRadius !== radius ){
-                return false;
-            }
-
             drawPositionX = x - radius + plotOffset.left;
             drawPositionY = y - radius + plotOffset.top;
 
@@ -48,29 +40,41 @@
                 ctx.drawImage( img, drawPositionX , drawPositionY , radius * 2, radius * 2 );
             };
 
-            if( series.points.image.images[ i ] ){
-                img.src = series.points.image.path + series.points.image.images[ i ]
-            } else {
-                img.src = series.points.image.path + series.points.image.base;
-            }
-
-            // Increase the counter so we keep up with the dataseries
-            i++;
+            img.src = image;
 
             return true;
         }
 
         var s = series.points.image,
-            i = 0,
-            baseRadius = false;
+            baseRadius = false,
+            image;
 
         if( s ) {
-            series.points.symbol = drawImageSymbol;
+            series.points.symbol = function( ctx, x, y, radius, shadow ){
+                
+                if( series.points.image.images[ i ] ){
+                    image = series.points.image.path + series.points.image.images[ i ]
+                } else if( series.points.image.images[ i ] !== false ){
+                    image = series.points.image.path + series.points.image.base;
+                } else {
+                    image = false;
+                }
+
+                // Increase the counter so we keep up with the dataseries
+                i++;
+                
+                drawImageSymbol( ctx, x, y, radius, shadow, image );
+            };
         }
+    }
+
+    function resetVars(){
+        i = 0;
     }
 
     function init( plot ) {
         plot.hooks.processDatapoints.push( processRawData );
+        plot.hooks.draw.push( resetVars );
     }
 
     $.plot.plugins.push( {
